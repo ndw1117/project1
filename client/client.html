@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Simple HTTP server</title>
+  <link rel="stylesheet" type="text/css" href="/style.css">
+
+  <script>
+
+    const handleResponse = async (response, parseResponse) => {
+
+      responseText = await response.text();
+      console.log(responseText);
+
+      const content = document.getElementById('content');
+      content.innerHTML = '';
+
+      // Display the information on the web page
+      const h1 = document.createElement('h1');  // Code
+
+      h1.innerText = response.headers.get('Status-Message');
+      content.appendChild(h1);
+
+      // If the response doesn't have a body to parse, return
+      if (!parseResponse) {
+        return;
+      }
+
+      const h3 = document.createElement('h3');  // Message
+
+      let parsedData = JSON.parse(responseText);
+      // If parsed data has a message
+      if (parsedData.message) {
+        h3.innerText = "Message: " + parsedData.message;
+        content.appendChild(h3);
+        return;
+      }
+
+      // If parsed data has a users object
+      if (parsedData.users) {
+        h3.innerText = JSON.stringify(parsedData.users);
+        content.appendChild(h3);
+        return;
+      }
+
+    };
+
+    const sendFetchRequest = async (url, selectedMethod) => {
+
+      // If it's a POST request
+      if (selectedMethod === 'post') {
+
+        const nameField = document.getElementById('nameField');
+        const ageField = document.getElementById('ageField');
+
+        const formData = `name=${nameField.value}&age=${ageField.value}`;
+        
+        const response = await fetch(url, {
+          method: selectedMethod,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json',
+          },
+          body: formData,
+        });
+
+        return handleResponse(response, response.status !== 204);
+      }
+
+      // Else it is a GET/HEAD request
+      const response = await fetch(url, {
+        method: selectedMethod,
+        headers: {
+          'Accept': 'application/json',
+        }
+      });
+
+      return handleResponse(response, selectedMethod !== 'head');
+    };
+
+    const init = () => {
+      const getUserButton = document.getElementById('getUser');
+      const addUserButton = document.getElementById('addUser');
+
+      const urlField = document.getElementById('urlField');
+      const methodSelect = document.getElementById('methodSelect');
+
+      addUserButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        sendFetchRequest('/addUser', 'post');
+      });
+
+      getUserButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        sendFetchRequest(urlField.value, methodSelect.value);
+      });
+    };
+
+    window.onload = init;
+  </script>
+</head>
+
+<body>
+  <section id="top">
+    <h3>POST Status Code Tests</h3>
+    <form id="nameForm" action="/addUser" method="post">
+      <label for="name">Name: </label>
+      <input id="nameField" type="text" name="name" />
+      <label for="age">Age: </label>
+      <input id="ageField" type="number" name="age" min="0" max="100" step="1" />
+      <input id='addUser' type="submit" value="Add User" />
+    </form>
+    <form id="userForm" action="/getUsers" method="get">
+      <select id='urlField'>
+        <option value='/getUsers'>/getUsers</option>
+        <option value='/notReal'>/notReal</option>
+      </select>
+      <select id="methodSelect">
+        <option value="get">GET</option>
+        <option value="head">HEAD</option>
+      </select>
+      <input id='getUser' type="submit" value="Get User" />
+    </form>
+  </section>
+  <section id="content">
+  </section>
+</body>
+
+</html>
