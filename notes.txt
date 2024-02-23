@@ -1,0 +1,5 @@
+Enter Name at start.
+Load songs at start so there's no in-game delay from server.
+Play game using random portion of stored song files and array of all song names for type bar. (Do I need to stream? -> Only if audio tag doesn't work with loading files)
+End of game, automatically POST name and score (either adding new user of updating), then show leaderboard using GET
+Maybe play again button (ideal b/c songs will still be loaded in/stored) or reload page.
