@@ -7,6 +7,8 @@
 
   <script>
 
+    let score = 0;
+
     const handleResponse = async (response, parseResponse) => {
 
       responseText = await response.text();
@@ -38,6 +40,7 @@
 
       // If parsed data has a users object
       if (parsedData.users) {
+        loadLeaderboard(parsedData.users);
         h3.innerText = JSON.stringify(parsedData.users);
         content.appendChild(h3);
         return;
@@ -51,10 +54,9 @@
       if (selectedMethod === 'post') {
 
         const nameField = document.getElementById('nameField');
-        const ageField = document.getElementById('ageField');
 
-        const formData = `name=${nameField.value}&age=${ageField.value}`;
-        
+        const formData = `name=${nameField.value}&score=${score}`;
+
         const response = await fetch(url, {
           method: selectedMethod,
           headers: {
@@ -78,22 +80,50 @@
       return handleResponse(response, selectedMethod !== 'head');
     };
 
+    const loadLeaderboard = (userJSON = null) => {
+      const leaderboard = document.getElementById("leaderboard");
+
+      leaderboard.innerHTML = `
+      <tr>
+        <th>Name</th>
+        <th>Score</th>
+      </tr>
+      `;
+
+      if (userJSON == null || Object.keys(userJSON).length === 0) {
+
+        leaderboard.innerHTML += `
+         <tr>
+          <td colspan="2" style="text-align: center;">Be the first to top the charts!</td>
+         </tr>
+        </table>`;
+        return;
+      }
+
+      // Else we have user data
+
+      Object.keys(userJSON).forEach(user => {
+        leaderboard.innerHTML += `
+        <tr>
+          <td>${userJSON[user]['name']}</td>
+          <td>${userJSON[user]['score']}</td>
+        </tr>`;
+      });
+
+      leaderboard.innerHTML += '</table>';
+
+    };
+
     const init = () => {
-      const getUserButton = document.getElementById('getUser');
-      const addUserButton = document.getElementById('addUser');
-
-      const urlField = document.getElementById('urlField');
-      const methodSelect = document.getElementById('methodSelect');
-
-      addUserButton.addEventListener('click', (e) => {
-        e.preventDefault();
+      const startButton = document.getElementById("startButton");
+      
+      startButton.onclick = async () => {
         sendFetchRequest('/addUser', 'post');
-      });
+        let users = await sendFetchRequest('/getUsers', 'get');
+      };
 
-      getUserButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        sendFetchRequest(urlField.value, methodSelect.value);
-      });
+      // When starting app, get user info and load the leaderboard
+      sendFetchRequest('getUsers', 'get');
     };
 
     window.onload = init;
@@ -102,25 +132,21 @@
 
 <body>
   <section id="top">
-    <h3>POST Status Code Tests</h3>
-    <form id="nameForm" action="/addUser" method="post">
-      <label for="name">Name: </label>
-      <input id="nameField" type="text" name="name" />
-      <label for="age">Age: </label>
-      <input id="ageField" type="number" name="age" min="0" max="100" step="1" />
-      <input id='addUser' type="submit" value="Add User" />
-    </form>
-    <form id="userForm" action="/getUsers" method="get">
-      <select id='urlField'>
-        <option value='/getUsers'>/getUsers</option>
-        <option value='/notReal'>/notReal</option>
-      </select>
-      <select id="methodSelect">
-        <option value="get">GET</option>
-        <option value="head">HEAD</option>
-      </select>
-      <input id='getUser' type="submit" value="Get User" />
-    </form>
+    <h1>Combs Quiz</h1>
+    <table id="leaderboard">
+      <tr>
+        <th>Name</th>
+        <th>Score</th>
+      </tr>
+      <tr>
+        <td colspan="2" style="text-align: center;">Be the first to top the charts!</td>
+      </tr>
+    </table>
+    <div id="nameDiv">
+      <label for="nameField">Name: </label>
+      <input type="text" id="nameField" name="nameField">
+    </div>
+    <button id="startButton">Start</button>
   </section>
   <section id="content">
   </section>

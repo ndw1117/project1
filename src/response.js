@@ -20,11 +20,11 @@ const respondJSONMeta = (request, response, status, statusMessage) => {
 const addUser = (request, response, body) => {
   // default json message, displayed when missing field(s)
   const responseJSON = {
-    message: 'Name and age are both required.',
+    message: 'Name and score are both required.',
   };
 
   // check to make sure we have both fields
-  if (!body.name || !body.age) {
+  if (!body.name || !body.score) {
     responseJSON.id = 'addUserMissingParams';
     return respondJSON(request, response, 400, 'Bad Request', responseJSON);
   }
@@ -40,7 +40,7 @@ const addUser = (request, response, body) => {
   }
 
   users[body.name].name = body.name;
-  users[body.name].age = body.age;
+  users[body.name].score = body.score;
 
   if (responseCode === 201) {
     responseJSON.message = 'Created Successfully';

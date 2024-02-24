@@ -6,12 +6,40 @@ html, body {
 }
 
 #top {
-  text-align: center;
-  margin: 0 auto;
+  /* text-align: center;
+  margin: 0 auto; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 #top h1 {
   font-size: 2em;
+}
+
+table {
+  width: 50%;
+  margin-bottom: 1.5%;
+}
+
+table, th, td {
+  border: 2px solid black;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 1%;
+}
+
+#nameDiv {
+  margin-bottom: 1%;
+}
+
+#startButton {
+  width: 4%;
+  border-radius: 20px;
+  padding: 5px;
+  cursor: pointer;
 }
 
 #content {
@@ -19,3 +47,4 @@ html, body {
   font-size: 2em;
   text-align: center;
 }
+
