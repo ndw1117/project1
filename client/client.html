@@ -2,13 +2,13 @@
 <html lang="en">
 
 <head>
-  <title>Combs Quiz</title>
+  <title>Song Quiz</title>
   <link rel="stylesheet" type="text/css" href="/style.css">
 
   <script>
 
     let score = 0;
-    let numSongs = 8;
+    let numSongs = 14;
     let songList = [];
     const ctx = new AudioContext();
 
@@ -162,10 +162,16 @@
         // await sendFetchRequest('/getUsers', 'get');
         // sendFetchRequest('/getAudio', 'get');
 
+        // Loop until the condition is true
+        while (songList.length !== numSongs) {
+          await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 500ms before checking again
+        }
+
         // Need the decimals to make sure 1st and last song have equal chance as the rest
         songNumber = Math.round(Math.random() * (songList.length - 0.02) - 0.49);
         playAudio(songNumber);
-        console.log(`playing song number ${songNumber}`)
+        console.log(`playing song number ${songNumber}`);
+
       };
 
       // When starting app, get user info and load the leaderboard
@@ -181,7 +187,7 @@
 
 <body>
   <section id="top">
-    <h1>Combs Quiz</h1>
+    <h1>Song Quiz</h1>
     <table id="leaderboard">
       <tr>
         <th>Name</th>
