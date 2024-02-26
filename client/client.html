@@ -8,6 +8,10 @@
   <script>
 
     let score = 0;
+    let numSongs = 8;
+    let songList = [];
+    const ctx = new AudioContext();
+
 
     const handleResponse = async (response, parseResponse) => {
 
@@ -84,26 +88,35 @@
       return handleResponse(response, selectedMethod !== 'head');
     };
 
-    // This method's code was inspired by https://www.thecodecreative.com/blog/how-to-load-an-audio-file-using-fetch
-    const loadAudio = async () => {
-      const ctx = new AudioContext();
-      const response = await fetch('/getAudio', {
-        method: 'get',
-        headers: {
-          'Accept': 'audio/mpeg',
-        }
-      });
-      let arrayBuffer = await response.arrayBuffer();
-      let decodedAudio = await ctx.decodeAudioData(arrayBuffer);
-      console.log(decodedAudio);
+    const playAudio = (index = 0) => {
       const playSound = ctx.createBufferSource();
-      playSound.buffer = decodedAudio;
+      playSound.buffer = songList[index];
       playSound.connect(ctx.destination);
-      playSound.start(0, 100);
+      playSound.start(0, Math.floor(Math.random() * (playSound.buffer.duration - 21) + 1));
 
       setTimeout(() => {
         playSound.stop();
       }, 10 * 1000);
+    };
+
+    // This method's code was inspired by https://www.thecodecreative.com/blog/how-to-load-an-audio-file-using-fetch
+    const loadAudio = async () => {
+
+      for (let i = 0; i < numSongs; i++) {
+        const response = await fetch(`/getAudio?id=${i}`, {
+          method: 'get',
+          headers: {
+            'Accept': 'audio/mpeg',
+          }
+        });
+        let arrayBuffer = await response.arrayBuffer();
+        let decodedAudio = await ctx.decodeAudioData(arrayBuffer);
+        console.log(decodedAudio); // decodedAudio.duration will give song length
+        songList.push(decodedAudio);
+      }
+
+      console.log(songList);
+
     };
 
 
@@ -148,11 +161,18 @@
         // sendFetchRequest('/addUser', 'post');
         // await sendFetchRequest('/getUsers', 'get');
         // sendFetchRequest('/getAudio', 'get');
-        loadAudio();
+
+        // Need the decimals to make sure 1st and last song have equal chance as the rest
+        songNumber = Math.round(Math.random() * (songList.length - 0.02) - 0.49);
+        playAudio(songNumber);
+        console.log(`playing song number ${songNumber}`)
       };
 
       // When starting app, get user info and load the leaderboard
       sendFetchRequest('getUsers', 'get');
+
+      // Load in the audio that will be used
+      loadAudio();
     };
 
     window.onload = init;

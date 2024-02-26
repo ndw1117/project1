@@ -1,15 +1,19 @@
 const fs = require('fs');
+const url = require('url');
+const query = require('querystring');
 
 const index = fs.readFileSync(`${__dirname}/../client/client.html`);
 const stylesheet = fs.readFileSync(`${__dirname}/../client/style.css`);
-const audio = [
-  {
-    'title': 'hurricane',
-    'data': fs.readFileSync(`${__dirname}/../assets/audio/hurricane.mp3`)
-  },
-];
+
+let audioJSON = fs.readFileSync(`${__dirname}/../data/audio.json`);
+let audio = JSON.parse(audioJSON).audio;
+audio.forEach(element => {
+  element.data = fs.readFileSync(element.data);
+});
+
 
 const users = {};
+
 
 const respondJSON = (request, response, status, statusMessage, object) => {
   response.writeHead(status, { 'Content-Type': 'application/json', 'Status-Message': statusMessage });
@@ -77,15 +81,31 @@ const getAudio = (request, response) => {
 
   response.writeHead(200, { 'Content-Type': 'audio/mpeg' });
 
+  const parsedUrl = url.parse(request.url);
+  const params = query.parse(parsedUrl.query);
 
-  if (request.query) {
-    if (request.query.id) {
+  if (parsedUrl.query) {
+    console.log("there is a query");
+    if (params.id) {
       console.log("using id");
-      response.write(audio[parseInt(request.query.id)].data);
+      if (audio[parseInt(params.id)]) {
+        response.write(audio[parseInt(params.id)].data);
+      }
+      else {
+        console.log("couldn't find id, returning song[0] instead");
+        response.write(audio[0].data);
+      }
     }
-    else if (request.query.title) {
+    else if (params.title) {
       console.log("using title");
-      response.write(audio.find(song => song.title === request.query.title).data);
+      let song = audio.find(song => song.title === params.title);
+      if (song) {
+        response.write(audio.find(song => song.title === params.title).data);
+      }
+      else {
+        console.log("couldn't find title, returning song[0] instead");
+        response.write(audio[0].data);
+      }
     }
     else { // Default
       console.log("default, query present");

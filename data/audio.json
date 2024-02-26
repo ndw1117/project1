@@ -1,0 +1,36 @@
+{
+    "audio": [
+        {
+            "title": "hurricane",
+            "data": "`${__dirname}/../assets/audio/hurricane.mp3"
+        },
+        {
+            "title": "fast_car",
+            "data": "`${__dirname}/../assets/audio/fast_car.mp3"
+        },
+        {
+            "title": "beautiful_crazy",
+            "data": "`${__dirname}/../assets/audio/beautiful_crazy.mp3"
+        },
+        {
+            "title": "houston_we_got_a_problem",
+            "data": "`${__dirname}/../assets/audio/houston_we_got_a_problem.mp3"
+        },
+        {
+            "title": "forever_after_all",
+            "data": "`${__dirname}/../assets/audio/forever_after_all.mp3"
+        },
+        {
+            "title": "going_going_gone",
+            "data": "`${__dirname}/../assets/audio/going_going_gone.mp3"
+          },
+          {
+            "title": "the_kind_of_love_we_make",
+            "data": "`${__dirname}/../assets/audio/the_kind_of_love_we_make.mp3"
+          },
+          {
+            "title": "when_it_rains_it_pours",
+            "data": "`${__dirname}/../assets/audio/when_it_rains_it_pours.mp3"
+          }
+    ]
+}
