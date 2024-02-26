@@ -23,14 +23,38 @@
         {
             "title": "going_going_gone",
             "data": "`${__dirname}/../assets/audio/going_going_gone.mp3"
-          },
-          {
+        },
+        {
             "title": "the_kind_of_love_we_make",
             "data": "`${__dirname}/../assets/audio/the_kind_of_love_we_make.mp3"
-          },
-          {
+        },
+        {
             "title": "when_it_rains_it_pours",
             "data": "`${__dirname}/../assets/audio/when_it_rains_it_pours.mp3"
-          }
+        },
+        {
+            "title": "where_the_wild_things_are",
+            "data": "`${__dirname}/../assets/audio/where_the_wild_things_are.mp3"
+        },
+        {
+            "title": "5_leaf_clover",
+            "data": "`${__dirname}/../assets/audio/5_leaf_clover.mp3"
+        },
+        {
+            "title": "love_you_anyway",
+            "data": "`${__dirname}/../assets/audio/love_you_anyway.mp3"
+        },
+        {
+            "title": "she_got_the_best_of_me",
+            "data": "`${__dirname}/../assets/audio/she_got_the_best_of_me.mp3"
+        },
+        {
+            "title": "one_number_away",
+            "data": "`${__dirname}/../assets/audio/one_number_away.mp3"
+        },
+        {
+            "title": "doin_this",
+            "data": "`${__dirname}/../assets/audio/doin_this.mp3"
+        }
     ]
 }
