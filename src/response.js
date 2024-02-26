@@ -2,6 +2,12 @@ const fs = require('fs');
 
 const index = fs.readFileSync(`${__dirname}/../client/client.html`);
 const stylesheet = fs.readFileSync(`${__dirname}/../client/style.css`);
+const audio = [
+  {
+    'title': 'hurricane',
+    'data': fs.readFileSync(`${__dirname}/../assets/audio/hurricane.mp3`)
+  },
+];
 
 const users = {};
 
@@ -64,6 +70,36 @@ const notReal = (request, response) => {
   return respondJSON(request, response, 404, 'Not Found', responseJSON);
 };
 
+const getAudio = (request, response) => {
+  if (request.method === 'HEAD') {
+    return respondJSONMeta(request, response, 200, 'Success');
+  }
+
+  response.writeHead(200, { 'Content-Type': 'audio/mpeg' });
+
+
+  if (request.query) {
+    if (request.query.id) {
+      console.log("using id");
+      response.write(audio[parseInt(request.query.id)].data);
+    }
+    else if (request.query.title) {
+      console.log("using title");
+      response.write(audio.find(song => song.title === request.query.title).data);
+    }
+    else { // Default
+      console.log("default, query present");
+      response.write(audio[0].data);
+    }
+  }
+  else { // Default
+    console.log("default, no query");
+    response.write(audio[0].data);
+  }
+
+  response.end();
+};
+
 const getUsers = (request, response) => {
   if (request.method === 'HEAD') {
     return respondJSONMeta(request, response, 200, 'Success');
@@ -91,3 +127,4 @@ module.exports.getStylesheet = getStylesheet;
 module.exports.getUsers = getUsers;
 module.exports.notReal = notReal;
 module.exports.addUser = addUser;
+module.exports.getAudio = getAudio;

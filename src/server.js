@@ -12,6 +12,7 @@ const urlStruct = {
   '/getUsers': handler.getUsers,
   '/notReal': handler.notReal,
   '/addUser': handler.addUser,
+  '/getAudio': handler.getAudio,
 };
 
 const parseBody = (request, response, handlerFunction) => {

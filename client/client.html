@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <title>Simple HTTP server</title>
+  <title>Combs Quiz</title>
   <link rel="stylesheet" type="text/css" href="/style.css">
 
   <script>
@@ -29,6 +29,10 @@
       }
 
       const h3 = document.createElement('h3');  // Message
+
+      if (response.ok && response.headers.get('Content-Type') === 'audio/mpeg') {
+        return response;
+      };
 
       let parsedData = JSON.parse(responseText);
       // If parsed data has a message
@@ -80,6 +84,29 @@
       return handleResponse(response, selectedMethod !== 'head');
     };
 
+    // This method's code was inspired by https://www.thecodecreative.com/blog/how-to-load-an-audio-file-using-fetch
+    const loadAudio = async () => {
+      const ctx = new AudioContext();
+      const response = await fetch('/getAudio', {
+        method: 'get',
+        headers: {
+          'Accept': 'audio/mpeg',
+        }
+      });
+      let arrayBuffer = await response.arrayBuffer();
+      let decodedAudio = await ctx.decodeAudioData(arrayBuffer);
+      console.log(decodedAudio);
+      const playSound = ctx.createBufferSource();
+      playSound.buffer = decodedAudio;
+      playSound.connect(ctx.destination);
+      playSound.start(0, 100);
+
+      setTimeout(() => {
+        playSound.stop();
+      }, 10 * 1000);
+    };
+
+
     const loadLeaderboard = (userJSON = null) => {
       const leaderboard = document.getElementById("leaderboard");
 
@@ -116,10 +143,12 @@
 
     const init = () => {
       const startButton = document.getElementById("startButton");
-      
+
       startButton.onclick = async () => {
-        sendFetchRequest('/addUser', 'post');
-        let users = await sendFetchRequest('/getUsers', 'get');
+        // sendFetchRequest('/addUser', 'post');
+        // await sendFetchRequest('/getUsers', 'get');
+        // sendFetchRequest('/getAudio', 'get');
+        loadAudio();
       };
 
       // When starting app, get user info and load the leaderboard
