@@ -13,6 +13,7 @@ const urlStruct = {
   '/notReal': handler.notReal,
   '/addUser': handler.addUser,
   '/getAudio': handler.getAudio,
+  '/getSongNames': handler.getSongNames,
 };
 
 const parseBody = (request, response, handlerFunction) => {

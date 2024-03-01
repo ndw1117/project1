@@ -5,15 +5,14 @@ const query = require('querystring');
 const index = fs.readFileSync(`${__dirname}/../client/client.html`);
 const stylesheet = fs.readFileSync(`${__dirname}/../client/style.css`);
 
-let audioJSON = fs.readFileSync(`${__dirname}/../data/audio.json`);
-let audio = JSON.parse(audioJSON).audio;
-audio.forEach(element => {
-  element.data = fs.readFileSync(element.data);
+const audioJSON = fs.readFileSync(`${__dirname}/../data/audio.json`);
+const { audio } = JSON.parse(audioJSON);
+audio.forEach((element) => {
+  const e = element;
+  e.data = fs.readFileSync(element.data);
 });
 
-
 const users = {};
-
 
 const respondJSON = (request, response, status, statusMessage, object) => {
   response.writeHead(status, { 'Content-Type': 'application/json', 'Status-Message': statusMessage });
@@ -50,7 +49,10 @@ const addUser = (request, response, body) => {
   }
 
   users[body.name].name = body.name;
-  users[body.name].score = body.score;
+  // Only update score if it's higher than existing one
+  if (!users[body.name].score || Number(users[body.name].score) < Number(body.score)) {
+    users[body.name].score = body.score;
+  }
 
   if (responseCode === 201) {
     responseJSON.message = 'Created Successfully';
@@ -74,6 +76,19 @@ const notReal = (request, response) => {
   return respondJSON(request, response, 404, 'Not Found', responseJSON);
 };
 
+const getSongNames = (request, response) => {
+  if (request.method === 'HEAD') {
+    return respondJSONMeta(request, response, 200, 'Success');
+  }
+
+  const songNames = [];
+  audio.forEach((element) => {
+    songNames.push(element.title);
+  });
+
+  return respondJSON(request, response, 200, 'Success', { songNames });
+};
+
 const getAudio = (request, response) => {
   if (request.method === 'HEAD') {
     return respondJSONMeta(request, response, 200, 'Success');
@@ -85,39 +100,34 @@ const getAudio = (request, response) => {
   const params = query.parse(parsedUrl.query);
 
   if (parsedUrl.query) {
-    console.log("there is a query");
+    // console.log('there is a query');
     if (params.id) {
-      console.log("using id");
-      if (audio[parseInt(params.id)]) {
-        response.write(audio[parseInt(params.id)].data);
-      }
-      else {
+      // console.log('using id');
+      if (audio[Number(params.id)]) {
+        response.write(audio[Number(params.id)].data);
+      } else {
         console.log("couldn't find id, returning song[0] instead");
         response.write(audio[0].data);
       }
-    }
-    else if (params.title) {
-      console.log("using title");
-      let song = audio.find(song => song.title === params.title);
+    } else if (params.title) {
+      // console.log('using title');
+      const song = audio.find((currentSong) => currentSong.title === params.title);
       if (song) {
-        response.write(audio.find(song => song.title === params.title).data);
-      }
-      else {
+        response.write(audio.find((currentSong) => currentSong.title === params.title).data);
+      } else {
         console.log("couldn't find title, returning song[0] instead");
         response.write(audio[0].data);
       }
-    }
-    else { // Default
-      console.log("default, query present");
+    } else { // Default
+      // console.log('default, query present');
       response.write(audio[0].data);
     }
-  }
-  else { // Default
-    console.log("default, no query");
+  } else { // Default
+    // console.log('default, no query');
     response.write(audio[0].data);
   }
 
-  response.end();
+  return response.end();
 };
 
 const getUsers = (request, response) => {
@@ -126,7 +136,7 @@ const getUsers = (request, response) => {
   }
 
   const responseJSON = { users };
-
+  
   return respondJSON(request, response, 200, 'Success', responseJSON);
 };
 
@@ -148,3 +158,4 @@ module.exports.getUsers = getUsers;
 module.exports.notReal = notReal;
 module.exports.addUser = addUser;
 module.exports.getAudio = getAudio;
+module.exports.getSongNames = getSongNames;
