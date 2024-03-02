@@ -17,6 +17,7 @@ const urlStruct = {
   '/getSongNames': handler.getSongNames,
 };
 
+// Function to parse the body of the request and call the appropriate handler
 const parseBody = (request, response, handlerFunction) => {
   // Array to store request pieces
   const body = [];
@@ -40,6 +41,7 @@ const parseBody = (request, response, handlerFunction) => {
   });
 };
 
+// Function to call the appropriate handler for the given request
 const onRequest = (request, response) => {
   const parsedUrl = url.parse(request.url);
 

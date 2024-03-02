@@ -11,12 +11,15 @@ body {
   background-image: url("../assets/images/background.png");
   background-repeat: no-repeat;
   background-size: cover;
+  background-position: center center;
+  background-attachment: fixed;
 }
 
 h1 {
   font-size: 3em;
   color: white;
-  text-shadow: 1px 1px 0 rgb(3, 73, 122);
+  text-shadow: 1px 1px 0 rgb(3, 73, 122),
+               0 0 4px black;
 }
 
 table {
@@ -54,7 +57,8 @@ tr {
 label {
   font-size: 2rem;
   color: white;
-  text-shadow: 1px 1px 0 rgb(3, 73, 122);
+  text-shadow: 1px 1px 0 rgb(3, 73, 122),
+               0 0 4px black;
   margin-right: 3%;
 }
 
@@ -87,7 +91,9 @@ button {
 
 p {
   color: white;
-  text-shadow: 1px 1px 0 rgb(3, 73, 122);
+  text-shadow: 1px 1px 0 rgb(3, 73, 122),
+               0 0 4px black;
   font-size: 1.4rem;
+  text-align: center;
 }
 
