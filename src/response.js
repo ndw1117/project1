@@ -4,6 +4,7 @@ const query = require('querystring');
 
 const index = fs.readFileSync(`${__dirname}/../client/client.html`);
 const stylesheet = fs.readFileSync(`${__dirname}/../client/style.css`);
+const background = fs.readFileSync(`${__dirname}/../assets/images/background.png`);
 
 const audioJSON = fs.readFileSync(`${__dirname}/../data/audio.json`);
 const { audio } = JSON.parse(audioJSON);
@@ -23,6 +24,12 @@ const respondJSON = (request, response, status, statusMessage, object) => {
 // For requests that only want the head
 const respondJSONMeta = (request, response, status, statusMessage) => {
   response.writeHead(status, { 'Content-Type': 'application/json', 'Status-Message': statusMessage });
+  response.end();
+};
+
+const getBackground = (request, response) => {
+  response.writeHead(200, { 'Content-Type': 'image/png' });
+  response.write(background);
   response.end();
 };
 
@@ -159,3 +166,4 @@ module.exports.notReal = notReal;
 module.exports.addUser = addUser;
 module.exports.getAudio = getAudio;
 module.exports.getSongNames = getSongNames;
+module.exports.getBackground = getBackground;
