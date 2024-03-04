@@ -12,7 +12,7 @@ const { audio } = JSON.parse(audioJSON);
 // Load audio data for each element into the audio array
 audio.forEach((element) => {
   const e = element;
-  e.data = fs.readFileSync(`${element.data}`);
+  e.data = fs.readFileSync(element.data.replace('${__dirname}', __dirname));
 });
 
 // Object to store user data
